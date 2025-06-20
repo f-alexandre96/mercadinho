@@ -1,19 +1,228 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catalogo</title>
+    <title>Mercadinho Digital</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <h1>Mercadinho</h1>
-    </header>
-    <main>
-        <div class="catalogo-produtos" id="catalogo">
-
+    <!-- Tela de Login -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-container">
+            <div class="login-header">
+                <i class="fas fa-shopping-cart"></i>
+                <h1>Mercadinho Digital</h1>
+                <p>Faça login para continuar</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha:</label>
+                    <input type="password" id="password" required placeholder="Sua senha">
+                </div>
+                <button type="submit" class="btn-primary">Entrar</button>
+            </form>
+            <div class="demo-credentials">
+                <p><strong>Credenciais de demonstração:</strong></p>
+                <p>Email: demo@mercadinho.com</p>
+                <p>Senha: 123456</p>
+            </div>
         </div>
-    </main>
+    </div>
+
+    <!-- Tela Principal do Mercadinho -->
+    <div id="mainScreen" class="screen">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h1>Mercadinho Digital</h1>
+                </div>
+                <div class="header-actions">
+                    <div class="cart-icon" id="cartIcon">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </div>
+                    <button class="btn-logout" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sair
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Filtros e Busca -->
+            <div class="filters-section">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Buscar produtos...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="category-filters">
+                    <button class="filter-btn active" data-category="all">Todos</button>
+                    <button class="filter-btn" data-category="men's clothing">Roupas Masculinas</button>
+                    <button class="filter-btn" data-category="women's clothing">Roupas Femininas</button>
+                    <button class="filter-btn" data-category="jewelery">Jóias</button>
+                    <button class="filter-btn" data-category="electronics">Eletrônicos</button>
+                </div>
+            </div>
+
+            <!-- Catálogo de Produtos -->
+            <div class="products-container">
+                <div class="products-grid" id="productsGrid">
+                    <!-- Produtos serão carregados aqui -->
+                </div>
+                <div class="loading" id="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Carregando produtos...</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Carrinho de Compras -->
+        <div id="cartSidebar" class="cart-sidebar">
+            <div class="cart-header">
+                <h2><i class="fas fa-shopping-bag"></i> Carrinho de Compras</h2>
+                <button class="close-cart" id="closeCart">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="cart-items" id="cartItems">
+                <!-- Itens do carrinho serão exibidos aqui -->
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cartTotal">R$ 0,00</span>
+                </div>
+                <button class="btn-checkout" id="checkoutBtn">
+                    <i class="fas fa-credit-card"></i>
+                    Finalizar Compra
+                </button>
+            </div>
+        </div>
+
+        <!-- Overlay do Carrinho -->
+        <div id="cartOverlay" class="cart-overlay"></div>
+    </div>
+
+    <!-- Modal de Checkout -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-credit-card"></i> Finalizar Compra</h2>
+                <button class="close-modal" id="closeCheckout">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="checkout-steps">
+                    <!-- Passo 1: Revisão do Pedido -->
+                    <div class="checkout-step active" id="step1">
+                        <h3>1. Revisão do Pedido</h3>
+                        <div class="order-summary" id="orderSummary">
+                            <!-- Resumo do pedido será exibido aqui -->
+                        </div>
+                        <button class="btn-next" onclick="nextStep()">Continuar</button>
+                    </div>
+
+                    <!-- Passo 2: Informações de Entrega -->
+                    <div class="checkout-step" id="step2">
+                        <h3>2. Informações de Entrega</h3>
+                        <form id="deliveryForm" class="checkout-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="fullName">Nome Completo:</label>
+                                    <input type="text" id="fullName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Telefone:</label>
+                                    <input type="tel" id="phone" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="address">Endereço:</label>
+                                <input type="text" id="address" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="city">Cidade:</label>
+                                    <input type="text" id="city" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="state">Estado:</label>
+                                    <input type="text" id="state" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="zipCode">CEP:</label>
+                                    <input type="text" id="zipCode" required>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="step-buttons">
+                            <button class="btn-prev" onclick="prevStep()">Voltar</button>
+                            <button class="btn-next" onclick="nextStep()">Continuar</button>
+                        </div>
+                    </div>
+
+                    <!-- Passo 3: Método de Pagamento -->
+                    <div class="checkout-step" id="step3">
+                        <h3>3. Método de Pagamento</h3>
+                        <div class="payment-methods">
+                            <div class="payment-option">
+                                <input type="radio" id="creditCard" name="payment" value="credit" checked>
+                                <label for="creditCard">
+                                    <i class="fas fa-credit-card"></i>
+                                    Cartão de Crédito
+                                </label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" id="pix" name="payment" value="pix">
+                                <label for="pix">
+                                    <i class="fas fa-qrcode"></i>
+                                    PIX
+                                </label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" id="boleto" name="payment" value="boleto">
+                                <label for="boleto">
+                                    <i class="fas fa-barcode"></i>
+                                    Boleto Bancário
+                                </label>
+                            </div>
+                        </div>
+                        <div class="step-buttons">
+                            <button class="btn-prev" onclick="prevStep()">Voltar</button>
+                            <button class="btn-next" onclick="nextStep()">Continuar</button>
+                        </div>
+                    </div>
+
+                    <!-- Passo 4: Confirmação -->
+                    <div class="checkout-step" id="step4">
+                        <h3>4. Confirmação</h3>
+                        <div class="confirmation-message">
+                            <i class="fas fa-check-circle"></i>
+                            <h4>Pedido Confirmado!</h4>
+                            <p>Seu pedido foi processado com sucesso.</p>
+                            <p>Você receberá um email de confirmação em breve.</p>
+                        </div>
+                        <button class="btn-primary" onclick="finishCheckout()">Voltar ao Mercadinho</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay do Modal -->
+    <div id="modalOverlay" class="modal-overlay"></div>
+
     <script src="script.js"></script>
 </body>
-</html>
+</html> 
